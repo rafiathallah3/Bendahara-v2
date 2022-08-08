@@ -58,6 +58,8 @@ function Dashboard() {
     const [ListBarang, setListBarang] = useState<[{name: string, harga: string, id: string}]>();
     const [Total, setTotal] = useState<{[idbayaran: string]: number}>({});
 
+    const url = "https://bendahara-v2-api.herokuapp.com"; // https://bendahara-v2-api.herokuapp.com
+
     const { id } = useParams();
 
     const Bulan = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -73,7 +75,7 @@ function Dashboard() {
     axiosJWT.interceptors.request.use(async(config) => {
         const currentDate = new Date();
         if(expired * 1000 < currentDate.getTime()) {
-            const response = await axios.get('https://bendahara-v2-api.herokuapp.com/token');
+            const response = await axios.get(`${url}/token`);
             const decoded: {UserId: string, email: string, name: string, exp: number, iat: number} = jwt_decode(response.data.accessToken);
             
             config.headers!.Authorization = `Bearer ${response.data.accessToken}`;
@@ -99,7 +101,7 @@ function Dashboard() {
 
         setModalShow(modal);
         //Tidak tau kenapa dikasi await sebelum axiosJWT akan stop functionnya, jadi ya harus diremove 04/08/2022 11:00PM
-        axiosJWT.post(`https://bendahara-v2-api.herokuapp.com/UpdateData`, {
+        axiosJWT.post(`${url}/bendahara/UpdateData`, {
             id,
             status,
             ...data
@@ -113,7 +115,7 @@ function Dashboard() {
 
     const DapatinListData = async() => {
         try {
-            const Data = await axios.get(`https://bendahara-v2-api.herokuapp.com/DapatinData?id=${id}`);
+            const Data = await axios.get(`${url}/bendahara/DapatinData?id=${id}`);
             console.log(Data.data)
             
             Data.data.nama.sort((a: {name: string}, b: {name: string}) => {
@@ -149,7 +151,7 @@ function Dashboard() {
 
     const refreshToken = async() => {
         try {
-            const response = await axios.get('https://bendahara-v2-api.herokuapp.com/token');
+            const response = await axios.get(`${url}/token`);
             setToken(response.data.accessToken);
         
             const decoded: {UserId: string, email: string, name: string, exp: number, iat: number} = jwt_decode(response.data.accessToken);

@@ -10,10 +10,12 @@ const Login = () => {
     });
     const [pesan, setPesan] = useState('');
     const navigate = useNavigate();
+
+    const url = "https://bendahara-v2-api.herokuapp.com"; // https://bendahara-v2-api.herokuapp.com
     
     const ApakahSudahLogin = async () => {
         try {
-            const resp = await axios.get('https://bendahara-v2-api.herokuapp.com/token');
+            const resp = await axios.get(`${url}/token`);
             
             const decoded: {UserId: string} = jwt_decode(resp.data.accessToken);
             navigate('/bendahara/'+decoded.UserId);
@@ -25,7 +27,7 @@ const Login = () => {
 
     const Login = async () => {        
         try {
-            const hasil = await axios.post('https://bendahara-v2-api.herokuapp.com/login', {
+            const hasil = await axios.post(`${url}/login`, {
                 email: form.email,
                 password: form.password,
             });

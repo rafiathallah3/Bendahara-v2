@@ -11,10 +11,11 @@ const Register = () => {
     });
     const [pesan, setPesan] = useState('');
     const navigate = useNavigate();
+    const url = "https://bendahara-v2-api.herokuapp.com"; // https://bendahara-v2-api.herokuapp.com
 
     const Register = async () => {        
         try {
-            await axios.post('https://bendahara-v2-api.herokuapp.com/register', {
+            await axios.post(`${url}/register`, {
                 name: form.name,
                 email: form.email,
                 password: form.password,
