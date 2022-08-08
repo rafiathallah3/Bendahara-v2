@@ -8,7 +8,7 @@ function Navbar() {
 
     const Logout = async () => {
         try {
-            await axios.delete('https://bendahara-v2.herokuapp.com/logout');
+            await axios.delete('https://bendahara-v2-api.herokuapp.com/logout');
             navigate('/login');
         } catch (error) {
             console.log(error);
@@ -17,7 +17,7 @@ function Navbar() {
 
     const ApakahSudahLogin = async () => {
         try {
-            const response = await axios.get('https://bendahara-v2.herokuapp.com/token');
+            const response = await axios.get('https://bendahara-v2-api.herokuapp.com/token');
             console.log("Token navbar", response.data.accessToken);
         } catch {
             setSudahLogin(false);

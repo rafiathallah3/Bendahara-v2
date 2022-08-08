@@ -14,7 +14,7 @@ const Register = () => {
 
     const Register = async () => {        
         try {
-            await axios.post('https://bendahara-v2.herokuapp.com/register', {
+            await axios.post('https://bendahara-v2-api.herokuapp.com/register', {
                 name: form.name,
                 email: form.email,
                 password: form.password,
