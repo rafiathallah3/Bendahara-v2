@@ -1,15 +1,17 @@
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 
 function Navbar() {
     const navigate = useNavigate();
     const [sudahLogin, setSudahLogin] = useState(true);
-    const url = "https://bendahara-v2-api.herokuapp.com"; // https://bendahara-v2-api.herokuapp.com
+    const url = "http://localhost:3001"; // https://bendahara-v2-api.herokuapp.com
 
     const Logout = async () => {
         try {
             await axios.delete(`${url}/logout`);
+            Cookies.remove('accessToken');
             navigate('/login');
         } catch (error) {
             console.log(error);
@@ -19,7 +21,7 @@ function Navbar() {
     const ApakahSudahLogin = async () => {
         try {
             const response = await axios.get(`${url}/token`);
-            console.log("Sudah login")
+            // console.log("Sudah login")
             console.log("Token navbar", response.data.accessToken);
         } catch {
             setSudahLogin(false);

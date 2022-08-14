@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Button, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
+import Cookies from 'js-cookie';
 
 type ModalData ={
     TambahinNama: boolean,
@@ -58,7 +59,7 @@ function Dashboard() {
     const [ListBarang, setListBarang] = useState<[{name: string, harga: string, id: string}]>();
     const [Total, setTotal] = useState<{[idbayaran: string]: number}>({});
 
-    const url = "https://bendahara-v2-api.herokuapp.com"; // https://bendahara-v2-api.herokuapp.com
+    const url = "http://localhost:3001"; // https://bendahara-v2-api.herokuapp.com
 
     const { id } = useParams();
 
@@ -75,11 +76,14 @@ function Dashboard() {
     axiosJWT.interceptors.request.use(async(config) => {
         const currentDate = new Date();
         if(expired * 1000 < currentDate.getTime()) {
-            const response = await axios.get(`${url}/token`);
-            const decoded: {UserId: string, email: string, name: string, exp: number, iat: number} = jwt_decode(response.data.accessToken);
-            
-            config.headers!.Authorization = `Bearer ${response.data.accessToken}`;
-            setToken(response.data.accessToken);
+            // const response = await axios.get(`${url}/token`);
+            // const token = response.data.accessToken || Cookies.get('accessToken');
+            const token = Cookies.get('accessToken')!;
+            const decoded: {UserId: string, email: string, name: string, exp: number, iat: number} = jwt_decode(token);
+            console.log(decoded);
+
+            config.headers!.Authorization = `Bearer ${token}`;
+            setToken(token);
             setDataAkun({id: decoded.UserId, name: decoded.name});
             setExpired(decoded.exp);
         }
@@ -116,7 +120,7 @@ function Dashboard() {
     const DapatinListData = async() => {
         try {
             const Data = await axios.get(`${url}/bendahara/DapatinData?id=${id}`);
-            console.log(Data.data)
+            // console.log(Data.data)
             
             Data.data.nama.sort((a: {name: string}, b: {name: string}) => {
                 return a.name.localeCompare(b.name);
@@ -136,8 +140,6 @@ function Dashboard() {
                 totalObject[d.id_mingguan as keyof typeof totalObject] += parseInt(d.bayaran);
                 listBayaran[key as keyof typeof listBayaran] = d.bayaran;
             }
-            console.log(listBayaran);
-            console.log(totalObject);
 
             setListNama(Data.data.nama);
             setListMingguan(Data.data.mingguan);
@@ -151,11 +153,13 @@ function Dashboard() {
 
     const refreshToken = async() => {
         try {
-            const response = await axios.get(`${url}/token`);
-            setToken(response.data.accessToken);
+            // const response = await axios.get(`${url}/token`);
+            // const Token = response.data.accessToken || Cookies.get("accessToken");
+            const Token = Cookies.get("accessToken")!;
+            setToken(Token);
         
-            const decoded: {UserId: string, email: string, name: string, exp: number, iat: number} = jwt_decode(response.data.accessToken);
-            setDataAkun({id: decoded.UserId, name: decoded.name});
+            const decoded: {id: string, email: string, name: string, exp: number, iat: number} = jwt_decode(Token);
+            setDataAkun({id: decoded.id, name: decoded.name});
             setExpired(decoded.exp);
         } catch (error: any) {
             console.error("Belum login");
@@ -272,6 +276,12 @@ function Dashboard() {
                 <h3>Total hasil uang kas: <span style={{color: Object.values(Total).reduce((a, b) => a + b, 0) - (ListBarang === undefined ? 0 : ListBarang.reduce((a, b) => a + parseInt(b.harga), 0)) > 0 ? "green" : "red"}}>{Object.values(Total).reduce((a, b) => a + b, 0) - (ListBarang === undefined ? 0 : ListBarang.reduce((a, b) => a + parseInt(b.harga), 0))}</span></h3>
                 
                 <br />
+                <div>
+                {[1].map((v) => {
+                    console.log(`Id bendahara: ${id}, Akun id: ${DataAkun?.id}`)
+                    return (<></>)
+                })}
+                </div>
                 { id === DataAkun?.id &&
                 <>
                 <button className="btn btn-primary" onClick={() => setModalShow({...modalShow, TambahinNama: true})} style={{marginRight: "10px"}}>Tambahin nama</button>

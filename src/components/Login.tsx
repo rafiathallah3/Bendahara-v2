@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 
@@ -11,14 +12,18 @@ const Login = () => {
     const [pesan, setPesan] = useState('');
     const navigate = useNavigate();
 
-    const url = "https://bendahara-v2-api.herokuapp.com"; // https://bendahara-v2-api.herokuapp.com
+    const url = "http://localhost:3001"; // https://bendahara-v2-api.herokuapp.com
     
     const ApakahSudahLogin = async () => {
         try {
             const resp = await axios.get(`${url}/token`);
-            
-            const decoded: {UserId: string} = jwt_decode(resp.data.accessToken);
-            navigate('/bendahara/'+decoded.UserId);
+            // const Token = resp.data.accessToken || Cookies.get('accessToken');
+            const Token = Cookies.get('accessToken');
+
+            if(Token !== undefined) {
+                const decoded: {UserId: string} = jwt_decode(Token);
+                navigate('/bendahara/'+decoded.UserId);
+            }
         } catch(e) {
             console.log("Belum login")
         }
@@ -31,6 +36,7 @@ const Login = () => {
                 email: form.email,
                 password: form.password,
             });
+            Cookies.set('accessToken', hasil.data.accessToken, {expires: 1});
             navigate(`/bendahara/${hasil.data.id}`);
         } catch (error: any) {
             if(error.response) {
