@@ -11,7 +11,7 @@ const Register = () => {
     });
     const [pesan, setPesan] = useState('');
     const navigate = useNavigate();
-    const url = "http://localhost:3001"; // https://bendahara-v2-api.herokuapp.com
+    const url = "https://bendahara-v2-api.herokuapp.com"; // https://bendahara-v2-api.herokuapp.com
 
     const Register = async () => {        
         try {

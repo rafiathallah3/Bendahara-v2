@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 function Navbar() {
     const navigate = useNavigate();
     const [sudahLogin, setSudahLogin] = useState(true);
-    const url = "http://localhost:3001"; // https://bendahara-v2-api.herokuapp.com
+    const url = "https://bendahara-v2-api.herokuapp.com"; // https://bendahara-v2-api.herokuapp.com
 
     const Logout = async () => {
         try {

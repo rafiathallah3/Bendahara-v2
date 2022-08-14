@@ -12,13 +12,13 @@ const Login = () => {
     const [pesan, setPesan] = useState('');
     const navigate = useNavigate();
 
-    const url = "http://localhost:3001"; // https://bendahara-v2-api.herokuapp.com
+    const url = "https://bendahara-v2-api.herokuapp.com"; // https://bendahara-v2-api.herokuapp.com
     
     const ApakahSudahLogin = async () => {
         try {
             const resp = await axios.get(`${url}/token`);
-            // const Token = resp.data.accessToken || Cookies.get('accessToken');
-            const Token = Cookies.get('accessToken');
+            const Token = resp.data.accessToken || Cookies.get('accessToken');
+            // const Token = Cookies.get('accessToken');
 
             if(Token !== undefined) {
                 const decoded: {UserId: string} = jwt_decode(Token);

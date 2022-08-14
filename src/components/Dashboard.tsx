@@ -59,7 +59,7 @@ function Dashboard() {
     const [ListBarang, setListBarang] = useState<[{name: string, harga: string, id: string}]>();
     const [Total, setTotal] = useState<{[idbayaran: string]: number}>({});
 
-    const url = "http://localhost:3001"; // https://bendahara-v2-api.herokuapp.com
+    const url = "https://bendahara-v2-api.herokuapp.com"; // https://bendahara-v2-api.herokuapp.com
 
     const { id } = useParams();
 
@@ -76,9 +76,9 @@ function Dashboard() {
     axiosJWT.interceptors.request.use(async(config) => {
         const currentDate = new Date();
         if(expired * 1000 < currentDate.getTime()) {
-            // const response = await axios.get(`${url}/token`);
-            // const token = response.data.accessToken || Cookies.get('accessToken');
-            const token = Cookies.get('accessToken')!;
+            const response = await axios.get(`${url}/token`);
+            const token = response.data.accessToken || Cookies.get('accessToken');
+            // const token = Cookies.get('accessToken')!;
             const decoded: {UserId: string, email: string, name: string, exp: number, iat: number} = jwt_decode(token);
             console.log(decoded);
 
@@ -153,9 +153,9 @@ function Dashboard() {
 
     const refreshToken = async() => {
         try {
-            // const response = await axios.get(`${url}/token`);
-            // const Token = response.data.accessToken || Cookies.get("accessToken");
-            const Token = Cookies.get("accessToken")!;
+            const response = await axios.get(`${url}/token`);
+            const Token = response.data.accessToken || Cookies.get("accessToken");
+            // const Token = Cookies.get("accessToken")!;
             setToken(Token);
         
             const decoded: {id: string, email: string, name: string, exp: number, iat: number} = jwt_decode(Token);
